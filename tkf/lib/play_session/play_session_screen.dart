@@ -26,7 +26,7 @@ import 'game_widget.dart';
 /// It is a stateful widget because it manages some state of its own,
 /// such as whether the game is in a "celebration" state.
 class PlaySessionScreen extends StatefulWidget {
-  final GameLevel level;
+  final QuizLevel level;
 
   const PlaySessionScreen(this.level, {super.key});
 
@@ -63,7 +63,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
         // by widgets below this one in the widget tree.
         ChangeNotifierProvider(
           create: (context) => LevelState(
-            goal: widget.level.difficulty,
+            goal: widget.level.number,
             onWin: _playerWon,
           ),
         ),
@@ -133,7 +133,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
 
     final score = Score(
       widget.level.number,
-      widget.level.difficulty,
+      widget.level.number,
       DateTime.now().difference(_startOfPlay),
     );
 

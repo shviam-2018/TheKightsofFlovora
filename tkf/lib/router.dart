@@ -39,7 +39,7 @@ final router = GoRouter(
                 pageBuilder: (context, state) {
                   final levelNumber = int.parse(state.pathParameters['level']!);
                   final level =
-                      gameLevels.singleWhere((e) => e.number == levelNumber);
+                      quizLevels.singleWhere((e) => e.number == levelNumber);
                   return buildMyTransition<void>(
                     key: const ValueKey('level'),
                     color: context.watch<Palette>().backgroundPlaySession,

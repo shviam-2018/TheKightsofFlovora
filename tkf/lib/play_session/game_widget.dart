@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../style/palette.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../game_internals/level_state.dart';
@@ -12,28 +13,67 @@ import '../level_selection/levels.dart';
 
 /// This widget defines the game UI itself, without things like the settings
 /// button or the back button.
-class GameWidget extends StatelessWidget {
+class GameWidget extends StatefulWidget {
   const GameWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final level = context.watch<GameLevel>();
-    final levelState = context.watch<LevelState>();
+  _GameWidgetState createState() => _GameWidgetState();
+}
 
-    return Column(
-      children: [
-        Text('Drag the slider to ${level.difficulty}% or above!'),
-        Slider(
-          label: 'Level Progress',
-          autofocus: true,
-          value: levelState.progress / 100,
-          onChanged: (value) => levelState.setProgress((value * 100).round()),
-          onChangeEnd: (value) {
-            context.read<AudioController>().playSfx(SfxType.wssh);
-            levelState.evaluate();
-          },
+class _GameWidgetState extends State<GameWidget> {
+  int currentLevelIndex = 0;
+
+  void _handleOptionSelected(int selectedIndex) {
+    final currentLevel = quizLevels[currentLevelIndex];
+    if (selectedIndex == currentLevel.correctOptionIndex) {
+      // Correct answer
+      // Proceed to the next level or show a success message
+      _proceedToNextLevel();
+    } else {
+      // Incorrect answer
+      // Show an error message or allow the player to retry
+    }
+  }
+
+  void _proceedToNextLevel() {
+    setState(() {
+      currentLevelIndex++;
+      if (currentLevelIndex >= quizLevels.length) {
+        // Game completed
+        // Show a completion message or navigate to a results screen
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currentLevel = quizLevels[currentLevelIndex];
+    final palette = context.watch<Palette>(); // Watch the Palette
+
+    return Container(
+      color: palette.backgroundPlaySession, // Use the background color from Palette
+      child: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // Set mainAxisSize to min
+              children: [
+                Text(currentLevel.question),
+                SizedBox(height: 20),
+                ...currentLevel.options.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final option = entry.value;
+                  return ElevatedButton(
+                    onPressed: () => _handleOptionSelected(index),
+                    child: Text(option),
+                  );
+                }).toList(),
+              ],
+            ),
+          ),
         ),
-      ],
+      ),
     );
   }
 }
