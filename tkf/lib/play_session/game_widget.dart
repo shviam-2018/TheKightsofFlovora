@@ -11,8 +11,6 @@ import '../audio/sounds.dart';
 import '../game_internals/level_state.dart';
 import '../level_selection/levels.dart';
 
-/// This widget defines the game UI itself, without things like the settings
-/// button or the back button.
 class GameWidget extends StatefulWidget {
   const GameWidget({super.key});
 
@@ -48,17 +46,25 @@ class _GameWidgetState extends State<GameWidget> {
   @override
   Widget build(BuildContext context) {
     final currentLevel = quizLevels[currentLevelIndex];
-    final palette = context.watch<Palette>(); // Watch the Palette
+    final palette = context.watch<Palette>();
 
     return Container(
-      color: palette.backgroundPlaySession, // Use the background color from Palette
+      color: palette.backgroundPlaySession,
       child: Center(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              mainAxisSize: MainAxisSize.min, // Set mainAxisSize to min
+              mainAxisSize: MainAxisSize.min,
               children: [
+                Text(
+                  currentLevel.name,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 20),
                 Text(currentLevel.question),
                 SizedBox(height: 20),
                 ...currentLevel.options.asMap().entries.map((entry) {
